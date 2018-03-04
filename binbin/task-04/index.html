@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript 斌斌学院 Task 04</title>
+    <style>
+      .number {
+        float: left;
+        margin-right: 10px;
+        padding: 20px;
+        font-size: 20px;
+        color: #fff;
+        background-color: red;
+      }
+    </style>
+  </head>
+<body>
+
+  <div>
+    <input id="input" type="text">
+    <button id="btn-left-in" type="button">左侧入</button>
+    <button id="btn-right-in" type="button">右侧入</button>
+    &nbsp;&nbsp;
+    <button id="btn-left-out" type="button">左侧出</button>
+    <button id="btn-right-out" type="button">右侧出</button>
+  </div>
+  <div id="output"></div>
+
+  <script>
+    var app = function () {
+      var input = document.getElementById('input'),
+          output = document.getElementById('output'),
+          btnLeftIn = document.getElementById('btn-left-in'),
+          btnRightIn = document.getElementById('btn-right-in'),
+          btnLeftOut = document.getElementById('btn-left-out'),
+          btnRightOut = document.getElementById('btn-right-out'),
+          data = [];
+
+      function render() {
+        var fragment = document.createDocumentFragment(),
+            elem = null;
+
+        data.forEach(function (number) {
+          elem = document.createElement('div');
+          elem.className = 'number';
+          elem.textContent = number;
+          fragment.appendChild(elem);
+        });
+
+        output.innerHTML = '';
+        output.appendChild(fragment);
+      }
+
+      function check(value) {
+        if (value.length && isFinite(Number(value))) {
+          return true;
+        } else {
+          alert('请输入数字');
+          return false;
+        }
+      }
+
+      function addLeft() {
+        var value = input.value;
+        if (check(value)) {
+          data.unshift(value);
+        }
+        render();
+      }
+
+      function addRight() {
+        var value = input.value;
+        if (check(value)) {
+          data.push(value);
+        }
+        render();
+      }
+
+      function delLeft() {
+        var value;
+        if (data.length) {
+          value = data.shift();
+          alert('删除' + value);
+          render();
+        }
+      }
+
+      function delRight() {
+        var value;
+        if (data.length) {
+          value = data.pop();
+          alert('删除' + value);
+          render();
+        }
+      }
+
+      function delSelf(event) {
+        var target = event.target,
+            elems, index, value;
+
+        if (data.length && target.className === 'number') {
+          elems = output.getElementsByClassName('number'),
+          index = [].indexOf.call(elems, target),
+          value = data[index];
+          alert('删除' + value);
+          data.splice(index, 1);
+          render();
+        }
+      }
+
+      function init() {
+        btnLeftIn.addEventListener('click', addLeft);
+        btnRightIn.addEventListener('click', addRight);
+        btnLeftOut.addEventListener('click', delLeft);
+        btnRightOut.addEventListener('click', delRight);
+        output.addEventListener('click', delSelf);
+      }
+
+      return {
+        init: init
+      };
+
+    }();
+
+    app.init();
+  </script>
+</body>
+</html>
