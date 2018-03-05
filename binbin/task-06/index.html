@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript 斌斌学院 Task 06</title>
+    <style>
+      #output {
+        margin-top: 20px;
+      }
+      .item {
+        float: left;
+        width: 100px;
+        height: 100px;
+        overflow: hidden;
+        margin-right: 5px;
+        text-align: center;
+        line-height: 100px;
+        color: #fff;
+        background-color: red;
+      }
+      .finded {
+        background-color: #696;
+      }
+    </style>
+  </head>
+<body>
+
+  <div>
+    <textarea id="input" cols="30" rows="6"></textarea>
+    <button id="btn-left-in" type="button">左侧入</button>
+    <button id="btn-right-in" type="button">右侧入</button>
+    &nbsp;&nbsp;
+    <button id="btn-left-out" type="button">左侧出</button>
+    <button id="btn-right-out" type="button">右侧出</button>
+    &nbsp;&nbsp;
+    <input id="search-input"  type="text">
+    <button id="search-btn">查询</button>
+  </div>
+  <div id="output"></div>
+
+  <script>
+    var app = function () {
+      var input = document.getElementById('input'),
+          output = document.getElementById('output'),
+          btnLeftIn = document.getElementById('btn-left-in'),
+          btnRightIn = document.getElementById('btn-right-in'),
+          btnLeftOut = document.getElementById('btn-left-out'),
+          btnRightOut = document.getElementById('btn-right-out'),
+          searchInput = document.getElementById('search-input'),
+          searchBtn = document.getElementById('search-btn'),
+          separator = /[  ,，、\n\t]/,
+          data = ['javascript', 'node.js', 'vue.js', 'react.js', 'angular.js', 'php', 'laravel'],
+          searchResult = [];
+
+      function render() {
+        var fragment = document.createDocumentFragment(),
+            elem = null;
+
+        data.forEach(function (item, index) {
+          elem = document.createElement('div');
+          elem.textContent = item;
+          elem.classList.add('item');
+          if (searchResult[index]) {
+            elem.classList.add('finded');
+          }
+          fragment.appendChild(elem);
+        });
+
+        input.value = '';
+        output.innerHTML = '';
+        output.appendChild(fragment);
+        console.log(data);
+      }
+
+      function check() {
+        var items = getItems();
+        if (input.value.trim().length === 0) {
+          return false;
+        }
+        if (data.length + items.length > 60) {
+          alert('队列数量已经达到最大值');
+          return false;
+        }
+        return true;
+      }
+
+      function getItems() {
+        return input.value.split(separator);
+      }
+
+      function addLeft() {
+        if (check()) {
+          data.unshift(...getItems());
+          clearSearch();
+          render();
+        }
+      }
+
+      function addRight() {
+        if (check()) {
+          data.push(...getItems());
+          clearSearch();
+          render();
+        }
+      }
+
+      function delLeft() {
+        var value;
+        if (data.length) {
+          value = data.shift();
+          alert('删除' + value);
+          clearSearch();
+          render();
+        }
+      }
+
+      function delRight() {
+        var value;
+        if (data.length) {
+          value = data.pop();
+          alert('删除' + value);
+          clearSearch();
+          render();
+        }
+      }
+
+      function delSelf(event) {
+        var target = event.target,
+            elems, index, value;
+
+        if (data.length && target.classList.contains('item')) {
+          elems = output.getElementsByClassName('item'),
+          index = [].indexOf.call(elems, target),
+          value = data[index];
+          data.splice(index, 1);
+          alert('删除' + value);
+          clearSearch();
+          render();
+        }
+      }
+
+      function search() {
+        var searchText = searchInput.value.trim();
+        if (searchText.length === 0) return;
+        searchResult = data.map(function (item, index) {
+          return item.indexOf(searchText) > -1;
+        });
+        render();
+      }
+
+      function clearSearch() {
+        searchResult = [];
+        searchInput.value = '';
+      }
+
+      function init() {
+        btnLeftIn.addEventListener('click', addLeft);
+        btnRightIn.addEventListener('click', addRight);
+        btnLeftOut.addEventListener('click', delLeft);
+        btnRightOut.addEventListener('click', delRight);
+        output.addEventListener('click', delSelf);
+        searchBtn.addEventListener('click', search);
+        render();
+      }
+
+      return {
+        init: init
+      };
+
+    }();
+
+    app.init();
+  </script>
+</body>
+</html>
