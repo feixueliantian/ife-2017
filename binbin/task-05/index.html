@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript 斌斌学院 Task 05</title>
+    <style>
+      .number {
+        float: left;
+        width: 15px;
+        margin-right: 5px;
+        background-color: red;
+      }
+    </style>
+  </head>
+<body>
+
+  <div>
+    <input id="input" type="text">
+    <button id="btn-left-in" type="button">左侧入</button>
+    <button id="btn-right-in" type="button">右侧入</button>
+    &nbsp;&nbsp;
+    <button id="btn-left-out" type="button">左侧出</button>
+    <button id="btn-right-out" type="button">右侧出</button>
+    &nbsp;&nbsp;
+    <button id="btn-sort">排序</button>
+    <button id="btn-bubble-sort">冒泡排序</button>
+    <button id="btn-selection-sort">选择排序</button>
+    <button id="btn-insertion-sort">插入排序</button>
+  </div>
+  <div id="output">
+    <div class="number"></div>
+  </div>
+
+  <script>
+    var app = function () {
+      var input = document.getElementById('input'),
+          output = document.getElementById('output'),
+          btnLeftIn = document.getElementById('btn-left-in'),
+          btnRightIn = document.getElementById('btn-right-in'),
+          btnLeftOut = document.getElementById('btn-left-out'),
+          btnRightOut = document.getElementById('btn-right-out'),
+          btnSort = document.getElementById('btn-sort'),
+          btnBubbleSort = document.getElementById('btn-bubble-sort'),
+          btnSelectionSort = document.getElementById('btn-selection-sort'),
+          btnInsertionSort = document.getElementById('btn-insertion-sort'),
+          data = [];
+
+      function render() {
+        var fragment = document.createDocumentFragment(),
+            elem = null;
+
+        data.forEach(function (number) {
+          elem = document.createElement('div');
+          elem.className = 'number';
+          elem.style.height = number * 2 + 'px';
+          fragment.appendChild(elem);
+        });
+
+        output.innerHTML = '';
+        output.appendChild(fragment);
+        console.log(data);
+      }
+
+      function check(value) {
+        value = Number(value);
+        if (isNaN(value)) {
+          alert('请输入 10-100 之间的整数');
+          return false;
+        }
+        if (value < 10 || value > 100) {
+          alert('请输入 10-100 之间的整数');
+          return false;
+        }
+        if (data.length === 60) {
+          alert('队列元素的数量已经达到了最高值');
+          return false;
+        }
+        return true;
+      }
+
+      function addLeft() {
+        var value = Math.floor(+input.value);
+        if (check(value)) {
+          data.unshift(value);
+        }
+        render();
+      }
+
+      function addRight() {
+        var value = Math.floor(+input.value);
+        if (check(value)) {
+          data.push(value);
+        }
+        render();
+      }
+
+      function delLeft() {
+        var value;
+        if (data.length) {
+          value = data.shift();
+          alert('删除' + value);
+          render();
+        }
+      }
+
+      function delRight() {
+        var value;
+        if (data.length) {
+          value = data.pop();
+          alert('删除' + value);
+          render();
+        }
+      }
+
+      function delSelf(event) {
+        var target = event.target,
+            elems, index, value;
+
+        if (data.length && target.className === 'number') {
+          elems = output.getElementsByClassName('number'),
+          index = [].indexOf.call(elems, target),
+          value = data[index];
+          alert('删除' + value);
+          data.splice(index, 1);
+          render();
+        }
+      }
+
+      function sort() {
+        data.sort((a, b) => a - b);
+        render();
+      }
+
+      function swap(data, i, j) {
+        var temp = data[i];
+        data[i] = data[j];
+        data[j] = temp;
+      }
+
+      function bubbleSort() {
+        var i, j, len = data.length;
+        for (i = 0; i < len; i++) {
+          for (j = 1; j < len - i ; j++) {
+            if (data[j] < data[j - 1]) {
+              swap(data, j, j - 1);
+            }
+          }
+        }
+        render();
+      }
+
+      function selectionSort() {
+        var i, j, len = data.length, min;
+        for (i = 0; i < len; i++) {
+          min = i;
+          for (j = i + 1; j < len; j++) {
+            if (data[j] < data[min]) {
+              min = j;
+            }
+          }
+          if (i !== min) {
+            swap(data, i, min);
+          }
+        }
+        render();
+      }
+
+      function insertionSort() {
+        var i, j, len = data.length, value;
+        for (i = 0; i < len - 1; i++) {
+          // 已完成的队列 0 ~ i
+          // 未完成的队列 i + 1 ~ len
+          // 待插入的元素，未完成队列的第一个元素 data[i + 1]
+          value = data[i + 1];
+          for (j = i; j >= 0; j--) {
+            // 已完成的队列 0 ~ i
+            // 从后向前(i ~ 0)依次比较已完成队列的元素和待插入的元素
+            // 每次循环取出已完成队列的最后一个未比较过的元素 data[j]，与待插入元素 value 的值进行比较
+            // data[j] 可以理解为本次循环的当前元素
+            if (value < data[j]) {
+              // 如果 data[j] 比待插入元素 value 大，则将 data[j] 后移一位
+              data[j + 1] = data[j];
+            } else {
+              // 如果 data[j] 比待插入元素 value 小或者等于 value，则找到了待插入元素的插入位置 (j + 1)，停止比较
+              data[j + 1] = value;
+              break;
+            }
+          }
+          // 比较了已完成队列 i ~ 0 的所有元素之后，如果还未找到待插入元素的位置，说明待插入元素比所有已完成队列的元素都小
+          // 此时应该把待插入的元素放到已完成队列的第一个元素
+          if (j === -1) {
+            data[0] = value;
+          }
+        }
+        render();
+      }
+
+      function init() {
+        btnLeftIn.addEventListener('click', addLeft);
+        btnRightIn.addEventListener('click', addRight);
+        btnLeftOut.addEventListener('click', delLeft);
+        btnRightOut.addEventListener('click', delRight);
+        output.addEventListener('click', delSelf);
+        btnSort.addEventListener('click', sort);
+        btnBubbleSort.addEventListener('click', bubbleSort);
+        btnSelectionSort.addEventListener('click', selectionSort);
+        btnInsertionSort.addEventListener('click', insertionSort);
+      }
+
+      return {
+        init: init
+      };
+
+    }();
+
+    app.init();
+  </script>
+</body>
+</html>
