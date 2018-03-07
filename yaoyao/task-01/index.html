@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript 耀耀学院 Task 01</title>
+    <link rel="stylesheet" href="../assets/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+          <form class="form-horizontal">
+            <div class="form-group form-group-lg" id="group">
+              <label class="col-md-2 control-label" for="username">名称</label>
+              <div class="col-md-8">
+                <input class="form-control" id="username" type="text">
+                <div class="help-block" id="info">必填，长度为4~16个字符</div>
+              </div>
+              <div class="col-md-2">
+                <button class="btn btn-primary btn-lg" id="validate-btn" type="button">验证</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var app = function () {
+
+        var btn = document.getElementById('validate-btn'),
+            group = document.getElementById('group'),
+            input = document.getElementById('username'),
+            info = document.getElementById('info');
+
+        function getLength() {
+          var username = input.value.trim(),
+              code, i, len = username.length, num = 0;
+          for (i = 0; i < len; i++) {
+            code = username.charCodeAt(i);
+            if (code <= 0xFF) {
+              num += 1;
+            } else if (code >= 0xD800 && code <= 0xDBFF) {
+              continue;
+            } else {
+              num += 2;
+            }
+          }
+          return num;
+        }
+
+        function checkUsername() {
+          var length = getLength();
+          if (length === 0) {
+            return error('姓名不能为空');
+          }
+          if (length < 4 || length > 16) {
+            return error('格式错误，长度为4~16个字符');
+          }
+          return success('名称格式正确');
+        }
+
+        function error(message) {
+          info.textContent = message;
+          group.classList.remove('has-success')
+          group.classList.add('has-error');
+        }
+
+        function success(message) {
+          info.textContent = message;
+          group.classList.remove('has-error')
+          group.classList.add('has-success');
+        }
+
+        function init() {
+          btn.addEventListener('click', checkUsername);
+        }
+
+        return {
+          init: init
+        };
+
+      }();
+
+      app.init();
+    </script>
+  </body>
+</html>
