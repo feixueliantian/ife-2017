@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript 斌斌学院 Task 07</title>
+    <style>
+      #container {
+        width: 1000px;
+        margin: 0 auto;
+        padding: 10px;
+      }
+
+      #container div {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+        border: 1px solid #000;
+        flex: 1;
+        margin: 10px;
+        background-color: #fff;
+      }
+
+      #container div.active {
+        background-color: tomato;
+      }
+
+      .btn-group {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      .btn-group button {
+        margin: 0 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <div id="root">
+        <div>
+          <div>
+            <div></div>
+            <div></div>
+          </div>
+          <div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+        <div>
+          <div>
+            <div></div>
+            <div></div>
+          </div>
+          <div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button id="pre-order-btn">先序遍历</button>
+      <button id="in-order-btn">中序遍历</button>
+      <button id="post-order-btn">后序遍历</button>
+    </div>
+
+    <script>
+      var app = function () {
+        var preOrderBtn = document.getElementById('pre-order-btn'),
+            inOrderBtn = document.getElementById('in-order-btn'),
+            postOrderBtn = document.getElementById('post-order-btn'),
+            root = document.getElementById('root'),
+            divs = [...document.querySelectorAll('#container div')],
+            timeId = null,
+            data = [];
+
+        var TIMEOUT = 500;
+
+        function preOrder(node, callback) {
+          if (node === null) return;
+          callback(node);
+          preOrder(node.firstElementChild, callback);
+          preOrder(node.lastElementChild, callback);
+        }
+
+        function inOrder(node, callback) {
+          if (node === null) return;
+          inOrder(node.firstElementChild, callback);
+          callback(node);
+          inOrder(node.lastElementChild, callback);
+        }
+
+        function postOrder(node, callback) {
+          if (node === null) return;
+          postOrder(node.firstElementChild, callback);
+          postOrder(node.lastElementChild, callback);
+          callback(node);
+        }
+
+        function addData(node) {
+          data.push(node);
+        }
+
+        function clearData() {
+          data = [];
+        }
+
+        function setColor(node) {
+          node.classList.add('active');
+        }
+
+        function clearColor() {
+          divs.forEach(function (div) {
+            div.classList.remove('active');
+          });
+        }
+
+        function play() {
+          var item = data.shift();
+          if (item !== undefined) {
+            clearColor();
+            setColor(item);
+            timeId = setTimeout(play, TIMEOUT);
+          }
+        }
+
+        function stop() {
+          clearTimeout(timeId);
+        }
+
+        function preOrderHandle() {
+          stop();
+          clearData();
+          preOrder(root, addData);
+          play();
+        }
+
+        function inOrderHandle() {
+          stop();
+          clearData();
+          inOrder(root, addData);
+          play();
+        }
+
+        function postOrderHandle() {
+          stop();
+          clearData();
+          postOrder(root, addData);
+          play();
+        }
+
+        function init() {
+          preOrderBtn.addEventListener('click', preOrderHandle);
+          inOrderBtn.addEventListener('click', inOrderHandle);
+          postOrderBtn.addEventListener('click', postOrderHandle);
+        }
+
+        return {
+          init: init
+        };
+      }();
+
+      app.init();
+    </script>
+  </body>
+</html>
