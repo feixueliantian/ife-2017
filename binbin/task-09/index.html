@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript 斌斌学院 Task 09</title>
+    <style>
+      #container {
+        width: 90%;
+        margin: 0 auto;
+        padding: 10px;
+      }
+
+      #container div {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+        border: 1px solid #000;
+        flex: 1;
+        margin: 10px;
+        background-color: #fff;
+      }
+
+      #container div.active {
+        background-color: tomato;
+      }
+
+      #container div.match {
+        background-color: #cca;
+      }
+
+      #container div.select {
+        background-color: #fac;
+      }
+
+      .btn-group {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      .btn-group button {
+        margin: 0 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <div id="root">
+        金庸
+        <div>
+          天龙八部
+          <div>
+            逍遥派
+            <div>天山童姥</div>
+            <div>无崖子</div>
+            <div>李秋水</div>
+          </div>
+          <div>
+            丐帮
+            <div>乔峰</div>
+          </div>
+        </div>
+        <div>
+          神雕侠侣
+          <div>
+            丐帮
+            <div>黄蓉</div>
+            <div>鲁有脚</div>
+          </div>
+          <div>
+            古墓派
+            <div>
+              小龙女
+              <div>玉女心经</div>
+            </div>
+            <div>
+              杨过
+              <div>玉女心经</div>
+              <div>玄铁剑法</div>
+              <div>黯然销魂掌</div>
+            </div>
+          </div>
+          <div>
+            绝情谷
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <input id="search-input" type="text">
+      <button id="pre-order-btn">先序遍历</button>
+      <button id="post-order-btn">后序遍历</button>
+      <button id="del-btn">删除</button>
+      <input id="add-input" type="text">
+      <button id="add-btn">添加</button>
+    </div>
+
+    <script>
+      var app = function () {
+        var preOrderBtn = document.getElementById('pre-order-btn'),
+            postOrderBtn = document.getElementById('post-order-btn'),
+            addBtn = document.getElementById('add-btn'),
+            delBtn = document.getElementById('del-btn'),
+            searchInput = document.getElementById('search-input'),
+            searchText = '',
+            addInput = document.getElementById('add-input'),
+            container = document.getElementById('container'),
+            root = document.getElementById('root'),
+            divs = container.getElementsByTagName('div'),
+            timeId = null,
+            temp = null,
+            selectedNode = null,
+            data = [];
+
+        var TIMEOUT = 100;
+
+        function preOrder(node, callback) {
+          var child = null;
+          callback(node);
+          child = node.firstElementChild;
+          while (child) {
+            preOrder(child, callback);
+            child = child.nextElementSibling;
+          }
+        }
+
+        function postOrder(node, callback) {
+          var child = node.firstElementChild;
+          while (child) {
+            postOrder(child, callback);
+            child = child.nextElementSibling;
+          }
+          callback(node);
+        }
+
+        function addData(node) {
+          var item = {};
+          item.el = node;
+          item.matched = searchText && node.firstChild.data.indexOf(searchText) > -1;
+          data.push(item);
+        }
+
+        function addColor(item) {
+          // temp 存储的是上一个 item 对象
+          if (temp) {
+            temp.el.classList.remove('active');
+          }
+          item.el.classList.add('active');
+          if (item.matched) {
+            item.el.classList.add('match');
+          }
+        }
+
+        function addSelectedColor() {
+          selectedNode.classList.add('select');
+        }
+
+        function setSearchText() {
+          searchText = searchInput.value.trim();
+        }
+
+        function play() {
+          var item = data.shift();
+          if (item !== undefined) {
+            addColor(item);
+            // 将当前的 item 对象存储到 temp
+            temp = item;
+            timeId = setTimeout(play, TIMEOUT);
+          }
+        }
+
+        function stop() {
+          clearTimeout(timeId);
+          data = [];
+          temp = null;
+          selectedNode = null;
+          addInput.value = '';
+          for (var i = 0, len = divs.length; i < len; i++) {
+            divs[i].removeAttribute('class');
+          }
+        }
+
+        function preOrderHandle() {
+          setSearchText();
+          stop();
+          preOrder(root, addData);
+          play();
+        }
+
+        function postOrderHandle() {
+          setSearchText();
+          stop();
+          postOrder(root, addData);
+          play();
+        }
+
+        function selectHandle(event) {
+          var target = event.target;
+          if (target.nodeName.toLowerCase() === 'div') {
+            stop();
+            selectedNode = target;
+            addSelectedColor();
+          }
+        }
+
+        function deleteHandle() {
+          if (selectedNode) {
+            selectedNode.remove();
+            selectedNode = null;
+          }
+        }
+
+        function addHandle() {
+          var newNode = null,
+              value = addInput.value.trim();
+          if (selectedNode && value) {
+            newNode = document.createElement('div');
+            newNode.textContent = value;
+            selectedNode.appendChild(newNode);
+          }
+        }
+
+        function init() {
+          preOrderBtn.addEventListener('click', preOrderHandle);
+          postOrderBtn.addEventListener('click', postOrderHandle);
+          root.addEventListener('click', selectHandle);
+          delBtn.addEventListener('click', deleteHandle);
+          addBtn.addEventListener('click', addHandle);
+        }
+
+        return {
+          init: init
+        };
+      }();
+
+      app.init();
+    </script>
+  </body>
+</html>
