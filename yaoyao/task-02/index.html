@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript 耀耀学院 Task 02</title>
+    <link rel="stylesheet" href="../assets/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+          <div class="page-header">
+            <h1 class="text-center">表单验证</h1>
+          </div>
+          <form class="form-horizontal">
+
+            <div class="form-group" id="username">
+              <label class="col-md-2 control-label">账号</label>
+              <div class="col-md-10">
+                <input class="form-control" type="text">
+                <div class="help-block"></div>
+              </div>
+            </div>
+
+            <div class="form-group" id="password">
+              <label class="col-md-2 control-label">密码</label>
+              <div class="col-md-10">
+                <input class="form-control" type="password">
+                <div class="help-block"></div>
+              </div>
+            </div>
+
+            <div class="form-group" id="password-confirm">
+              <label class="col-md-2 control-label">密码确认</label>
+              <div class="col-md-10">
+                <input class="form-control" type="password">
+                <div class="help-block"></div>
+              </div>
+            </div>
+
+            <div class="form-group" id="email">
+              <label class="col-md-2 control-label">邮箱</label>
+              <div class="col-md-10">
+                <input class="form-control" type="text">
+                <div class="help-block"></div>
+              </div>
+            </div>
+
+            <div class="form-group" id="phone">
+              <label class="col-md-2 control-label">手机</label>
+              <div class="col-md-10">
+                <input class="form-control" type="text">
+                <div class="help-block"></div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="col-md-10 col-md-offset-2">
+                <button class="btn btn-primary" type="submit">提交</button>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var app = function () {
+
+        /*
+         * 表单元素对象的构造器
+         */
+        function field(options) {
+
+          field.EMPTY = 0;
+          field.SUCCESS = 1;
+          field.ERROR = 2;
+
+          var obj = {
+            id: options.id,
+            messages: options.messages,
+            rule: options.rule,
+            required: options.required,
+            validate: options.validate
+          };
+
+          function initElement(obj) {
+            obj.$group = document.getElementById(obj.id),
+            obj.$input = obj.$group.querySelector('.form-control'),
+            obj.$block = obj.$group.querySelector('.help-block');
+          }
+
+          function initMessage(obj) {
+            obj.info = function (msg) {
+              obj.$group.classList.remove('has-success');
+              obj.$group.classList.remove('has-error');
+              obj.$block.textContent = msg;
+              return true;
+            };
+
+            obj.success = function (msg) {
+              obj.$group.classList.remove('has-error');
+              obj.$group.classList.add('has-success');
+              obj.$block.textContent = msg;
+              return true;
+            };
+
+            obj.error = function (msg) {
+              obj.$group.classList.remove('has-success');
+              obj.$group.classList.add('has-error');
+              obj.$block.textContent = msg;
+              return false;
+            };
+          };
+
+          function initEvent(obj) {
+            if (typeof obj.validate !== 'function') {
+              obj.validate = function () {
+                if (obj.$input.value.length === 0) {
+                  return field.EMPTY;
+                } else {
+                  return obj.rule.test(obj.$input.value) ?  field.SUCCESS : field.ERROR;
+                }
+              };
+            }
+
+            obj.check = function () {
+              var status = obj.validate();
+              if (status === field.EMPTY) {
+                if (obj.required) {
+                  return obj.error(obj.messages.empty);
+                } else {
+                  return obj.info('');
+                }
+              } else if (status === field.SUCCESS) {
+                return obj.success(obj.messages.success);
+              } else {
+                return obj.error(obj.messages.error);
+              }
+            };
+
+            obj.$input.onfocus = obj.info.bind(obj, obj.messages.info);
+            obj.$input.onblur = obj.check;
+          }
+
+          initElement(obj);
+          initMessage(obj);
+          initEvent(obj);
+
+          return obj;
+        };
+
+        var username = field({
+          id: 'username',
+          messages: {
+            info: '请输入账号，长度为6-16个字符，只能包括英文字母、数字、下划线',
+            success: '输入成功',
+            error: '账号长度必须为6-16个字符，只能包括英文字母、数字、下划线',
+            empty: '账号不能为空',
+          },
+          required: true,
+          rule: /^\w{6,16}$/,
+        });
+
+        var password = field({
+          id: 'password',
+          messages: {
+            info: '请输入密码，长度为6-16个字符',
+            success: '输入成功',
+            error: '密码长度必须为6-16个字符',
+            empty: '密码不能为空',
+          },
+          required: true,
+          rule: /^.{6,16}$/
+        });
+
+        var confirm = field({
+          id: 'password-confirm',
+          messages: {
+            info: '请确认密码',
+            success: '两次密码相同',
+            error: '两次密码不相同'
+          },
+          validate: function () {
+            return this.$input.value === password.$input.value ? field.SUCCESS : field.ERROR;
+          }
+        });
+
+        var email = field({
+          id: 'email',
+          messages: {
+            info: '请输入邮箱',
+            success: '输入成功',
+            error: '邮箱格式不正确'
+          },
+          rule: /^\w+@(\w+\.)+(com|cn)$/
+        });
+
+        var phone = field({
+          id: 'phone',
+          messages: {
+            info: '请输入11位手机号',
+            success: '输入成功',
+            error: '手机格式不正确',
+            empty: '手机不能为空',
+          },
+          required: true,
+          rule: /^\d{11}$/
+        });
+
+        function init() {
+          var fields = [username, password, confirm, email, phone],
+              signUpForm = document.forms[0];
+
+          signUpForm.onsubmit = function (event) {
+            event.preventDefault();
+            var status = fields.map(field => field.check());
+            if(status.every(value => value)) {
+              alert('提交成功');
+            } else {
+              alert('提交失败');
+            }
+          };
+        }
+
+        return {
+          init: init
+        };
+      }();
+
+      app.init();
+    </script>
+  </body>
+</html>
