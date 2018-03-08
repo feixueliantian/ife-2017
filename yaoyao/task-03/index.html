@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript 耀耀学院 Task 03</title>
+    <link rel="stylesheet" href="../assets/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+          <div class="page-header">
+            <h1 class="text-center">表单联动</h1>
+          </div>
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label class="col-md-2 control-label">状态</label>
+              <div class="col-md-5">
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="status" data-for="university-panel"> 在校生
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-5">
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="status" data-for="company-panel"> 非在校生
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group panel hidden" id="university-panel">
+              <label class="col-md-2 control-label">学校</label>
+              <div class="col-md-5">
+                <select class="form-control" id="city">
+                </select>
+              </div>
+              <div class="col-md-5">
+                <select class="form-control" id="university">
+                </select>
+              </div>
+            </div>
+            <div class="form-group panel hidden" id="company-panel">
+              <label class="col-md-2 control-label">就业单位</label>
+              <div class="col-md-10">
+                <input class="form-control" id="company" type="text">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var data = [
+        {
+          city: '北京',
+          universities: ['清华大学', '北京大学', '中国人民大学', '北京电影学院'],
+        },
+        {
+          city: '上海',
+          universities: ['复旦大学', '同济大学', '上海交通大学']
+        },
+        {
+          city: '天津',
+          universities: ['南开大学', '天津大学']
+        }
+      ];
+
+      function renderPanel() {
+        var radios = [...document.getElementsByName('status')],
+            panels = [...document.getElementsByClassName('panel')];
+
+        function toggle() {
+          var panelId = this.dataset.for,
+              panel = document.getElementById(panelId),
+              checked = this.checked;
+
+          if (checked) {
+            hide();
+            panel.classList.remove('hidden');
+          }
+        }
+
+        function hide() {
+          panels.forEach(function (panel) {
+            panel.classList.add('hidden');
+          });
+        }
+
+        radios.forEach(function (radio) {
+          radio.addEventListener('change', toggle);
+        });
+
+        // 触发一个 change 事件
+        radios[0].checked = true;
+        radios[0].dispatchEvent(new Event('change'));
+      }
+
+      function renderSelect(data) {
+        var $city = document.getElementById('city'),
+            $university = document.getElementById('university');
+
+        data.forEach(function (item, index) {
+          var option = new Option(item.city, index);
+          $city.add(option, undefined);
+        });
+
+        $city.addEventListener('change', function () {
+          var index = this.selectedIndex,
+              universities = data[index].universities;
+
+          $university.innerHTML = '';
+          universities.forEach(function (university, index) {
+            var option = new Option(university, index);
+            $university.add(option, undefined);
+          });
+        });
+
+        // 触发一个 change 事件
+        $city.dispatchEvent(new Event('change'));
+      };
+
+      renderPanel();
+      renderSelect(data);
+    </script>
+  </body>
+</html>
