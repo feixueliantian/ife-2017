@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript 耀耀学院 Task 05</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        text-align: center;
+      }
+      div.container {
+        position: relative;
+        width: 600px;
+        margin: 0 auto;
+        margin-bottom: 20px;
+      }
+      table {
+        display: block;
+        border-collapse:collapse;
+      }
+      th {
+        width: 50px;
+        height: 50px;
+      }
+      td {
+        width: 50px;
+        height: 50px;
+        border: 1px solid #ccc;
+      }
+      .robot {
+        width: 50px;
+        height: 50px;
+        background-color: red;
+        border-top: 15px solid blue;
+      }
+      .btn-group {
+        margin-bottom: 10px;
+      }
+      .btn {
+        width: 130px;
+        height: 60px;
+        padding: 15px 20px;
+        color: #fff;
+        background-color: #66a;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <table cellspadding="0">
+        <thead>
+          <tr>
+            <th></th>
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+            <th>4</th>
+            <th>5</th>
+            <th>6</th>
+            <th>7</th>
+            <th>8</th>
+            <th>9</th>
+            <th>10</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>1</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>2</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>3</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>4</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>5</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>6</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>7</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>8</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>9</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>10</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="robot"></div>
+    </div>
+
+    <div class="buttons">
+      <div class="btn-group">
+        <button class="btn" id="tun-lef">TUN LEF</button>
+        <button class="btn" id="tun-rig">TUN RIG</button>
+        <button class="btn" id="tun-bac">TUN BAC</button>
+        <button class="btn" id="tun-go">TUN GO</button>
+      </div>
+      <div class="btn-group">
+        <button class="btn" id="tra-lef">TRA LEF</button>
+        <button class="btn" id="tra-top">TRA TOP</button>
+        <button class="btn" id="tra-rig">TRA RIG</button>
+        <button class="btn" id="tra-bot">TRA BOT</button>
+      </div>
+      <div class="btn-group">
+        <button class="btn" id="mov-lef">MOV LEF</button>
+        <button class="btn" id="mov-top">MOV TOP</button>
+        <button class="btn" id="mov-rig">MOV RIG</button>
+        <button class="btn" id="mov-bot">MOV BOT</button>
+      </div>
+    </div>
+
+    <script>
+      var robot = function () {
+        var x = 5,
+            y = 5,
+            rotate = 0,
+            face = {
+              0: 'top',
+              90: 'rig',
+              180: 'bot',
+              270: 'lef'
+            },
+            $table = document.querySelector('table'),
+            $el = document.querySelector('.robot');
+
+        function tun(direction) {
+          switch (direction) {
+            case 'lef':
+              rotate = (rotate - 90 + 360) % 360;
+              break;
+            case 'rig':
+              rotate = (rotate + 90) % 360;
+              break;
+            case 'bac':
+              rotate = (rotate + 180) % 360;
+              break;
+            case 'go':
+              return go();
+              break;
+          }
+        }
+
+        function tra(direction) {
+          go(direction);
+        }
+
+        function mov(direction) {
+          switch (direction) {
+            case 'top':
+              rotate = 0;
+              break;
+            case 'lef':
+              rotate = 270;
+              break;
+            case 'rig':
+              rotate = 90;
+              break;
+            case 'bot':
+              rotate = 180;
+              break;
+          }
+          tra(direction);
+        }
+
+        function go(direction) {
+          direction = direction || face[rotate];
+          switch(direction) {
+            case 'top':
+              y = Math.max(1, y - 1);
+              break;
+            case 'rig':
+              x = Math.min(10, x + 1);
+              break;
+            case 'bot':
+              y = Math.min(10, y + 1);
+              break;
+            case 'lef':
+              x = Math.max(1, x - 1);
+              break;
+          }
+        }
+
+        function render() {
+          $table.rows[y].cells[x].appendChild($el);
+          $el.style.transform = `rotate(${rotate}deg)`;
+        }
+
+        return {
+          tun,
+          tra,
+          mov,
+          render
+        };
+
+      }();
+
+      var app = function (robot) {
+        function order(event) {
+          var target = event.target,
+              match, method, params;
+
+          if (!target.classList.contains('btn')) {
+            return false;
+          }
+
+          match = target.id.match(/^(.+)-(.+)$/);
+          method = match[1];
+          param = match[2];
+
+          if (typeof robot[method] === 'function') {
+            robot[method](param);
+            robot.render();
+          }
+        }
+
+        function init() {
+          robot.render();
+          document.querySelector('.buttons').addEventListener('click', order);
+        }
+
+        return {
+          init
+        };
+      }(robot);
+
+      app.init();
+    </script>
+  </body>
+</html>
