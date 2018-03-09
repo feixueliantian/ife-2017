@@ -1,0 +1,37 @@
+[
+  {
+    "name": "小明",
+    "chinese": 90,
+    "math": 100,
+    "english": 70,
+    "total": 260
+  },
+  {
+    "name": "小花",
+    "chinese": 90,
+    "math": 70,
+    "english": 80,
+    "total": 240
+  },
+  {
+    "name": "小红",
+    "chinese": 70,
+    "math": 90,
+    "english": 70,
+    "total": 230
+  },
+  {
+    "name": "小桃",
+    "chinese": 60,
+    "math": 100,
+    "english": 90,
+    "total": 250
+  },
+  {
+    "name": "小张",
+    "chinese": 80,
+    "math": 80,
+    "english": 70,
+    "total": 230
+  }
+]
