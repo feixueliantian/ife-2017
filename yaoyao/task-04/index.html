@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript 耀耀学院 Task 04</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        text-align: center;
+      }
+      table {
+        display: table;
+        margin: 0 auto;
+        margin-bottom: 20px;
+        border-collapse:collapse;
+      }
+      th {
+        width: 50px;
+        height: 50px;
+      }
+      td {
+        width: 50px;
+        height: 50px;
+        border: 1px solid #ccc;
+      }
+      .box {
+        box-sizing: border-box;
+        width: 50px;
+        height: 50px;
+        background-color: red;
+        border-top: 15px solid blue;
+      }
+    </style>
+  </head>
+  <body>
+    <table cellspadding="0">
+      <thead>
+        <tr>
+          <th></th>
+          <th>1</th>
+          <th>2</th>
+          <th>3</th>
+          <th>4</th>
+          <th>5</th>
+          <th>6</th>
+          <th>7</th>
+          <th>8</th>
+          <th>9</th>
+          <th>10</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>1</th>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>2</th>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>3</th>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>4</th>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>5</th>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>6</th>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>7</th>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>8</th>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>9</th>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>10</th>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <div>
+      <input type="text">
+      <button>执行</button>
+      <p>输入“GO”向前移动一格 输入“TUN LEF”左转 输入“TUN RIG”右转 输入“TUN BAC”向后转</p>
+    </div>
+    <script>
+      var robot = function () {
+        var x = 5,
+            y = 5,
+            rotate = 0,
+            $table = document.getElementsByTagName('table')[0],
+            $el = document.createElement('div');
+
+        $el.classList.add('box');
+
+        function turnLeft() {
+          rotate = (rotate - 90 + 360) % 360;
+          render();
+        }
+
+        function turnRight() {
+          rotate = (rotate + 90) % 360;
+          render();
+        }
+
+        function turnBack() {
+          rotate = (rotate + 180) % 360;
+          render();
+        }
+
+        function go() {
+          switch(rotate) {
+            case 0:
+              y = Math.max(1, y - 1);
+              break;
+            case 90:
+              x = Math.min(10, x + 1);
+              break;
+            case 180:
+              y = Math.min(10, y + 1);
+              break;
+            case 270:
+              x = Math.max(1, x - 1);
+              break;
+          }
+          render();
+        }
+
+        function render() {
+          $table.rows[y].cells[x].appendChild($el);
+          $el.style.transform = `rotate(${rotate}deg)`;
+        }
+
+        return {
+          turnLeft,
+          turnRight,
+          turnBack,
+          go,
+          render
+        };
+
+      }();
+
+      var app = function (robot) {
+        var $btn = document.getElementsByTagName('button')[0];
+            $input = document.getElementsByTagName('input')[0];
+
+        function order() {
+          var command = $input.value.trim();
+
+          switch (command) {
+            case 'TUN LEF':
+              robot.turnLeft();
+              break;
+            case 'TUN RIG':
+              robot.turnRight();
+              break;
+            case 'TUN BAC':
+              robot.turnBack();
+              break;
+            case 'GO':
+              robot.go();
+              break;
+          }
+        }
+
+        function init() {
+          robot.render();
+          $btn.addEventListener('click', order);
+        }
+
+        return {
+          init
+        };
+      }(robot);
+
+      app.init();
+
+    </script>
+  </body>
+</html>
